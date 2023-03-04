@@ -7,6 +7,7 @@ const Schema = new mongoose.Schema("", {
   },
   description: {
     type: String,
+    required: true,
   },
   imsges: {
     type: [String],
@@ -28,7 +29,7 @@ const Schema = new mongoose.Schema("", {
     type: [mongoose.Types.ObjectId],
     default: [],
   },
-  dis_likes: {
+  dislikes: {
     type: [mongoose.Types.ObjectId],
     default: [],
   },
@@ -38,7 +39,7 @@ const Schema = new mongoose.Schema("", {
   },
   price: {
     type: Number,
-    default: 0,
+    required: true,
   },
   discount: {
     type: Number,
@@ -46,10 +47,10 @@ const Schema = new mongoose.Schema("", {
   },
   count: {
     type: Number,
-    default: 0,
   },
   type: {
     type: String,
+    required: true,
   },
   time: {
     type: String,
@@ -62,15 +63,6 @@ const Schema = new mongoose.Schema("", {
   },
   details: {
     type: Object,
-    default: {
-      length: "",
-      height: "",
-      width: "",
-      weight: "",
-      color: [],
-      model: [],
-      madein: "",
-    },
     required: true,
   },
 });
@@ -78,5 +70,5 @@ const Schema = new mongoose.Schema("", {
 const ProductModel = mongoose.model("product", Schema);
 
 module.exports = {
-    ProductModel,
+  ProductModel,
 };

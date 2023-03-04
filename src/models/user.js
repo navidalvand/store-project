@@ -1,4 +1,4 @@
-const {default : mongoose} = require("mongoose");
+const { default: mongoose } = require("mongoose");
 
 const Schema = new mongoose.Schema("", {
   first_name: { type: String },
@@ -17,7 +17,7 @@ const Schema = new mongoose.Schema("", {
     },
   },
   bills: { type: [], default: [] },
-  discount: { type: String, default: 0 },
+  discount: { type: [Object] },
   birthDay: { type: String },
   roles: {
     type: [String],

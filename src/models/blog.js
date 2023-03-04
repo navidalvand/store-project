@@ -33,7 +33,7 @@ const Schema = new mongoose.Schema({
     type: [mongoose.Types.ObjectId],
     default: [],
   },
-  dis_likes: {
+  dislikes: {
     type: [mongoose.Types.ObjectId],
     default: [],
   },

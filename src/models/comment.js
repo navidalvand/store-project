@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 
 const Schema = new mongoose.Schema({
-  title: { type: String, required: true },
+  text: { type: String, required: true },
+  author: { type: mongoose.Types.ObjectId, required: true },
 });
 
 const CategoryModel = mongoose.model("category", Schema);
