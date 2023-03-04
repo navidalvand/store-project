@@ -64,12 +64,12 @@ class Server {
 
     this.#app.use((err, req, res, next) => {
       const serverError = createError.InternalServerError();
-      const status = err?.status || serverError.status;
+      const statusCode = err?.status || serverError.status;
       const message = err?.message || serverError.message;
-      return res.status(status).json({
+      return res.status(statusCode).json({
         data: null,
         errors: {
-          status,
+          statusCode,
           message,
         },
       });
