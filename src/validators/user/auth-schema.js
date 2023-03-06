@@ -1,5 +1,5 @@
 const Joi = require("@hapi/joi");
-const authSchema = Joi.object({
+const mobileAuthSchema = Joi.object({
   phone: Joi.string()
     .length(11)
     .required()
@@ -8,5 +8,5 @@ const authSchema = Joi.object({
 });
 
 module.exports = {
-  authSchema,
+  mobileAuthSchema,
 };

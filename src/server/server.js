@@ -1,9 +1,11 @@
 const path = require("path");
 const http = require("http");
-const { allRoutes } = require("../routes/Router");
+const { allRoutes } = require("../routes/router");
 const morgan = require("morgan");
 const process = require("process");
 const createError = require("http-errors");
+const swaggerUI = require("swagger-ui-express");
+const swaggerJsDoc = require("swagger-jsdoc");
 
 class Server {
   #express = require("express");
@@ -40,7 +42,29 @@ class Server {
     });
   }
 
-  configSwagger() {}
+  configSwagger() {
+    this.#app.use(
+      "/api-doc",
+      swaggerUI.serve,
+      swaggerUI.setup(
+        swaggerJsDoc({
+          swaggerDefinition: {
+            info: {
+              title: "felan store",
+              version: "2.0.0",
+              description: "test desc",
+            },
+            servers: [
+              {
+                url: "http://localhost:3000",
+              },
+            ],
+          },
+          apis: ["./src/routes/*/*.js"],
+        })
+      )
+    );
+  }
 
   createRoutes() {
     this.#app.use(allRoutes);
