@@ -6,10 +6,6 @@ class Controller {
     constructor() {
         autoBind(this)
     }
-
-    testMethod () {
-        return "test string"
-    }
 }
 
 

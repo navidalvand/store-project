@@ -6,14 +6,14 @@ const Schema = new mongoose.Schema("", {
   image: { type: String, default: "defult.jpg" },
   username: { type: String, required: true, lowercase: true },
   email: { type: String, lowercase: true },
-  phone: { type: String },
+  phone: { type: String , required : true},
   password: { type: String, required: true },
   token: { type: String, required: true },
   otp: {
     type: Object,
     default: {
       code: "",
-      expires: 0,
+      expiresIn: 0,
     },
   },
   bills: { type: [], default: [] },
