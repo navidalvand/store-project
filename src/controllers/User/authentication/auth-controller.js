@@ -1,8 +1,12 @@
 const { UserModel } = require("../../../models/user");
 const { OTPNumber } = require("../../../utils/OTP");
-const { getOtpSchema } = require("../../../validators/user/auth-schema");
+const {
+  getOtpSchema,
+  checkOtpSchema,
+} = require("../../../validators/user/auth-schema");
 const createError = require("http-errors");
 const { Controller } = require("../../controller");
+const { signAccessToken } = require("../../../utils/JWT");
 
 class UserAuthController extends Controller {
   async getOtp(req, res, next) {
@@ -27,16 +31,27 @@ class UserAuthController extends Controller {
     }
   }
 
-  checkOtp() {
+  async checkOtp(req, res, next) {
     try {
+      await checkOtpSchema.validateAsync(req.body);
       const now = new Date().getTime();
       const { phone, code } = req.body;
-      const user = this.checkExistUser(phone);
-      if (user.otp.code !== code)
-        throw { statusCode: 400, message: "wrong code" };
+      const user = await UserModel.findOne({ phone });
+      if (!user) throw createError.NotFound();
+      // if (user.otp.code !== code) throw createError.Unauthorized("wrong code");
       if (user.otp.expiresIn < now)
-        throw { statusCode: 400, message: "the otp password expired" };
-        
+        throw createError.Unauthorized("the otp password expired");
+      const accessToken = await signAccessToken(user._id);
+      res.cookie("token", accessToken, {
+        maxAge: 1000 * 60 * 60,
+        httpOnly: true,
+      });
+
+      return res.status(200).json({
+        statusCode: 200,
+        message: "ok",
+        accessToken,
+      });
     } catch (err) {
       next(err);
     }

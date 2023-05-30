@@ -6,6 +6,8 @@ const process = require("process");
 const createError = require("http-errors");
 const swaggerUI = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
+const cookieParser = require('cookie-parser');
+
 
 class Server {
   #express = require("express");
@@ -25,6 +27,7 @@ class Server {
     this.#app.use(morgan("dev"));
     this.#app.use(this.#express.json());
     this.#app.use(this.#express.urlencoded());
+    this.#app.use(cookieParser());
     this.#app.use(this.#express.static(path.join(__dirname, "..", "public")));
   }
 
