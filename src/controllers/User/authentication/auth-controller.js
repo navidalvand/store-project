@@ -1,60 +1,78 @@
 const { UserModel } = require("../../../models/user");
 const { OTPNumber } = require("../../../utils/OTP");
-const { EXPIRES_IN, USER_ROLE } = require("../../../utils/constant");
-const { mobileAuthSchema } = require("../../../validators/user/auth-schema");
+const { getOtpSchema } = require("../../../validators/user/auth-schema");
 const createError = require("http-errors");
 const { Controller } = require("../../controller");
 
 class UserAuthController extends Controller {
-  async login(req, res, next) {
+  async getOtp(req, res, next) {
     try {
-      await mobileAuthSchema.validateAsync(req.body);
+      await getOtpSchema.validateAsync(req.body);
       const { phone } = req.body;
       const code = OTPNumber();
       const result = await this.saveUser(phone, code);
-      console.log("MAIN RESULT = " + result);
-      if (!result) throw createError.Unauthorized();
-      return res.status(201).json({
+      if (!result) throw createError.Unauthorized("cannot login");
+      return res.status(200).send({
         data: {
-          status: 201,
-          message: "login",
-          code,
-          phone,
+          statusCode: 200,
+          data: {
+            message: "ok",
+            code,
+            phone,
+          },
         },
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  checkOtp() {
+    try {
+      const now = new Date().getTime();
+      const { phone, code } = req.body;
+      const user = this.checkExistUser(phone);
+      if (user.otp.code !== code)
+        throw { statusCode: 400, message: "wrong code" };
+      if (user.otp.expiresIn < now)
+        throw { statusCode: 400, message: "the otp password expired" };
+        
     } catch (err) {
-      next(err.message);
+      next(err);
     }
   }
 
   async saveUser(phone, code) {
+    const now = new Date().getTime();
     let otp = {
       code,
-      expiresIn: EXPIRES_IN,
+      expiresIn: now + 120000,
     };
 
-    const result = await this.checkExistUser(phone);
-    if (result) return await this.updateUser(phone, { otp });
-
-    const test = await UserModel.create({
+    const user = await this.checkExistUser(phone);
+    if (user) {
+      console.log(user.otp, now);
+      if (+user.otp.expiresIn > now)
+        throw createError.Forbidden("the code is stil useable");
+      return await this.updateUser(phone, { otp });
+    }
+    return await UserModel.create({
       phone,
       otp,
     });
-
-    console.log(test);
   }
 
   async checkExistUser(phone) {
-    const user = await UserModel.findOne({ phone });
-    console.log(user);
-    return !!user;
+    const user = await UserModel.findOne({ phone: phone });
+    return user;
   }
 
   async updateUser(phone, data = {}) {
     Object.keys(data).forEach((key) => {
-      if (!data[key]) delete data[key];
+      if (["", " ", 0, null, undefined, "0", NaN].includes(data[key]))
+        delete data[key];
     });
-    const updateResult = await UserModel.updateOne({ phone }, {$set : data});
+    const updateResult = await UserModel.updateOne({ phone }, { $set: data });
     return !!updateResult.modifiedCount;
   }
 }

@@ -34,7 +34,7 @@ const router = require("express").Router();
  *                 description: Internal Server Error
  */
 
-router.post("/login", UserAuthController.login);
+router.post("/login", UserAuthController.getOtp);
 
 module.exports = {
   authRoutes: router,
