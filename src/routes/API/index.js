@@ -1,4 +1,5 @@
 const { HomeController } = require('../../controllers/API/home-controller')
+const { verifyAccessToken } = require('../../middleware/autoLogin')
 const router = require('express').Router()
 
 /**
@@ -25,7 +26,7 @@ const router = require('express').Router()
  */
 
 
-router.get("/" , HomeController.indexPage)
+router.get("/" , verifyAccessToken , HomeController.indexPage)
 
 
 module.exports = {

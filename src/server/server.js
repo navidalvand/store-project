@@ -8,7 +8,6 @@ const swaggerUI = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
 const cookieParser = require('cookie-parser');
 
-
 class Server {
   #express = require("express");
   #mongoose = require("mongoose");

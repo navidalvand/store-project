@@ -7,21 +7,24 @@ function signAccessToken(userId) {
     const user = await UserModel.findById(userId);
     const paload = {
       phone: user.phone,
-      userID: user._id,
     };
-    const secret = process.env.SECRET_KEY;
     const options = {
       expiresIn: "1h",
     };
-    jwt.sign(paload, secret, options, (err, token) => {
-      if (err) reject(createError.InternalServerError());
-      resolve(token);
-    });
+    jwt.sign(
+      paload,
+      process.env.ACCESS_TOKEN_SECRET_KEY,
+      options,
+      (err, token) => {
+        if (err) reject(createError.InternalServerError());
+        resolve(token);
+      }
+    );
   });
 }
 
 
 
 module.exports = {
-    signAccessToken
-}
+  signAccessToken,
+};

@@ -38,7 +38,6 @@ class UserAuthController extends Controller {
       const { phone, code } = req.body;
       const user = await UserModel.findOne({ phone });
       if (!user) throw createError.NotFound();
-      // if (user.otp.code !== code) throw createError.Unauthorized("wrong code");
       if (user.otp.expiresIn < now)
         throw createError.Unauthorized("the otp password expired");
       const accessToken = await signAccessToken(user._id);
