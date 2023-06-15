@@ -6,7 +6,10 @@ const {
 } = require("../../../validators/user/auth-schema");
 const createError = require("http-errors");
 const { Controller } = require("../../controller");
-const { signAccessToken } = require("../../../utils/JWT");
+const {
+  signAccessToken,
+  signRefreshToken,
+} = require("../../../utils/JWT");
 
 class UserAuthController extends Controller {
   async getOtp(req, res, next) {
@@ -40,9 +43,16 @@ class UserAuthController extends Controller {
       if (!user) throw createError.NotFound();
       if (user.otp.expiresIn < now)
         throw createError.Unauthorized("the otp password expired");
+      if (user.otp.code != code)
+        throw { status: 401, message: "otp password is wrong" };
       const accessToken = await signAccessToken(user._id);
+      const refreshToken = await signRefreshToken(user._id);
       res.cookie("token", accessToken, {
-        maxAge: 1000 * 60 * 60,
+        maxAge: 86400000,
+        httpOnly: true,
+      });
+      res.cookie("refreshToken", refreshToken, {
+        maxAge: 86400000 * 365,
         httpOnly: true,
       });
 
@@ -50,6 +60,7 @@ class UserAuthController extends Controller {
         statusCode: 200,
         message: "ok",
         accessToken,
+        refreshToken,
       });
     } catch (err) {
       next(err);
@@ -65,7 +76,6 @@ class UserAuthController extends Controller {
 
     const user = await this.checkExistUser(phone);
     if (user) {
-      console.log(user.otp, now);
       if (+user.otp.expiresIn > now)
         throw createError.Forbidden("the code is stil useable");
       return await this.updateUser(phone, { otp });

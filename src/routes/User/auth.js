@@ -10,7 +10,6 @@ const router = require("express").Router();
  *      description : register & login & logout APIs
  */
 
-
 /**
  * @swagger
  *  /auth/get-otp:
@@ -34,7 +33,6 @@ const router = require("express").Router();
  *              500:
  *                 description: Internal Server Error
  */
-
 
 /**
  * @swagger
@@ -64,6 +62,8 @@ const router = require("express").Router();
  *              500:
  *                 description: Internal Server Error
  */
+
+
 router.post("/get-otp", UserAuthController.getOtp);
 router.post("/check-otp", UserAuthController.checkOtp);
 

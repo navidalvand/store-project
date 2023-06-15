@@ -6,7 +6,8 @@ const process = require("process");
 const createError = require("http-errors");
 const swaggerUI = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
-const cookieParser = require('cookie-parser');
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 class Server {
   #express = require("express");
@@ -16,6 +17,7 @@ class Server {
   constructor(PORT, DB_URI) {
     this.configServer();
     this.configDataBase(DB_URI);
+    this.initRedis()
     this.configSwagger();
     this.createRoutes();
     this.startServer(PORT);
@@ -23,6 +25,7 @@ class Server {
   }
 
   configServer() {
+    this.#app.use(cors());
     this.#app.use(morgan("dev"));
     this.#app.use(this.#express.json());
     this.#app.use(this.#express.urlencoded());
@@ -36,12 +39,16 @@ class Server {
       return console.log(err.message);
     });
     this.#mongoose.connection.on("connected", () => {
-      console.log("mongoose connected event");
+      console.log("mongoose is ready to use");
     });
     process.on("SIGINT", async () => {
       await this.#mongoose.connection.close();
       process.exit(0);
     });
+  }
+
+  initRedis () {
+    require('../utils/init-redis.js');
   }
 
   configSwagger() {
