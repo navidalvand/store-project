@@ -17,7 +17,7 @@ class Server {
   constructor(PORT, DB_URI) {
     this.configServer();
     this.configDataBase(DB_URI);
-    this.initRedis()
+    this.initRedis();
     this.configSwagger();
     this.createRoutes();
     this.startServer(PORT);
@@ -47,8 +47,8 @@ class Server {
     });
   }
 
-  initRedis () {
-    require('../utils/init-redis.js');
+  initRedis() {
+    require("../utils/init-redis.js");
   }
 
   configSwagger() {
@@ -69,7 +69,7 @@ class Server {
               },
             ],
           },
-          apis: ["./src/routes/*/*.js"],
+          apis: ["./src/routes/*/*.js", "./src/routes/*.js"],
         })
       )
     );

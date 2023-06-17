@@ -1,5 +1,5 @@
 const { UserModel } = require("../../../models/user");
-const { OTPNumber } = require("../../../utils/OTP");
+const { randomNumberGenerator } = require("../../../utils/random-number");
 const {
   getOtpSchema,
   checkOtpSchema,
@@ -16,7 +16,7 @@ class UserAuthController extends Controller {
     try {
       await getOtpSchema.validateAsync(req.body);
       const { phone } = req.body;
-      const code = OTPNumber();
+      const code = randomNumberGenerator();
       const result = await this.saveUser(phone, code);
       if (!result) throw createError.Unauthorized("cannot login");
       return res.status(200).send({

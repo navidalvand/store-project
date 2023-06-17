@@ -1,13 +1,12 @@
-const { HomeController } = require('../../controllers/API/home-controller')
-const { autoLogin } = require('../../middleware/autoLogin')
-const router = require('express').Router()
+const { HomeController } = require("../../controllers/API/home-controller");
+const router = require("express").Router();
 
 /**
  * @swagger
  *  tags :
  *      name : home page
  *      description : home page data
- * 
+ *
  */
 
 /**
@@ -20,15 +19,13 @@ const router = require('express').Router()
  *      responses:
  *          200 :
  *              description : success
- *          404 : 
+ *          404 :
  *              description : not found
- * 
+ *
  */
 
-
-router.get("/" , autoLogin , HomeController.indexPage)
-
+router.get("/", HomeController.indexPage);
 
 module.exports = {
-    homeRoutes : router
-}
+  homeRoutes: router,
+};
