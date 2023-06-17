@@ -12,7 +12,7 @@ const router = require('express').Router();
 
 /**
  * @swagger
- *  /admin/create-category:
+ *  /admin/category/create:
  *      post:
  *          summary: create category in panel admin
  *          tags: [category]
@@ -39,7 +39,7 @@ const router = require('express').Router();
  *                 description: Internal Server Error
  */
 
-router.post('/create-category' , CategoryController.createCategory)
+router.post('/create' , CategoryController.createCategory)
 
 
 
@@ -49,5 +49,5 @@ router.post('/create-category' , CategoryController.createCategory)
 
 
 module.exports = {
-    adminRoutes : router
+    categoryRoutes : router
 }
