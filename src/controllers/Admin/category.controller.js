@@ -39,7 +39,14 @@ class CategoryController extends Controller {
   }
   async getAllCategories(req, res, next) {
     try {
-      const allCategories = await CategoryModel.find({})
+      const allCategories = await CategoryModel.aggregate([{
+        $lookup : {
+          from : "categories",
+          localField : "_id",
+          foreignField : "parent",
+          as : "children"
+        }
+      }])
       res.status(200).json({
         allCategories,
         messsage : "all categories"
