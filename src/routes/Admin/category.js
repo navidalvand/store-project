@@ -5,7 +5,7 @@ const router = require('express').Router();
 /**
  * @swagger
  *  tags :
- *      name : category
+ *      name : admin-category
  *      description : category management in panel admin
  */
 
@@ -15,7 +15,7 @@ const router = require('express').Router();
  *  /admin/category/create:
  *      post:
  *          summary: create category in panel admin
- *          tags: [category]
+ *          tags: [admin-category]
  *          description: create category
  *          parameters:
  *                - in : formData
@@ -42,8 +42,51 @@ const router = require('express').Router();
 router.post('/create' , CategoryController.createCategory)
 
 
+/**
+ * @swagger
+ *  /admin/category/all-parents:
+ *      get:
+ *          summary: get all parent categories in panel admin
+ *          tags: [admin-category]
+ *          description: get parent categories
+ *          responses:
+ *              200:
+ *                 description: Success
+ *              400:
+ *                 description: Bad Request
+ *              401:
+ *                 description: UnAuthorization
+ *              404:
+ *                 description: Not Found
+ */
+
+router.get("/all-parents", CategoryController.getAllParents)
 
 
+/**
+ * @swagger
+ *  /admin/category/children/{parentId}:
+ *      get:
+ *          summary: get all children categories by parent id
+ *          tags: [admin-category]
+ *          description: get all children
+ *          parameters:
+ *            - in : path
+ *              name : parentId
+ *              required : true
+ *              type : string
+ *          responses:
+ *              200:
+ *                 description: Success
+ *              400:
+ *                 description: Bad Request
+ *              401:
+ *                 description: UnAuthorization
+ *              404:
+ *                 description: Not Found
+ */
+
+router.get("/children/:parentId" , CategoryController.getAllChildrenByParent)
 
 
 

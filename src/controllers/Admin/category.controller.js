@@ -51,12 +51,25 @@ class CategoryController extends Controller {
   }
   async getAllParents(req, res, next) {
     try {
+      const parentCategories = await CategoryModel.find({ parent: null });
+      res.status(200).json({
+        data: parentCategories,
+        message: "all parent categories",
+      });
     } catch (err) {
       next(err);
     }
   }
   async getAllChildrenByParent(req, res, next) {
     try {
+      const parentId = req.params.parentId;
+      const parent = await CategoryModel.findById(parentId);
+      if (!parent) throw { status: 404, message: "parent not found" };
+      const children = await CategoryModel.find({ parent: parentId });
+      res.status(200).json({
+        data : children,
+        message : "all children"
+      });
     } catch (err) {
       next(err);
     }
