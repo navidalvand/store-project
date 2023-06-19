@@ -39,6 +39,11 @@ class CategoryController extends Controller {
   }
   async getAllCategories(req, res, next) {
     try {
+      const allCategories = await CategoryModel.find({})
+      res.status(200).json({
+        allCategories,
+        messsage : "all categories"
+      })
     } catch (err) {
       next(err);
     }

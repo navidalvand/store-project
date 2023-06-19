@@ -62,7 +62,6 @@ router.post('/create' , CategoryController.createCategory)
 
 router.get("/all-parents", CategoryController.getAllParents)
 
-
 /**
  * @swagger
  *  /admin/category/children/{parentId}:
@@ -88,6 +87,26 @@ router.get("/all-parents", CategoryController.getAllParents)
 
 router.get("/children/:parentId" , CategoryController.getAllChildrenByParent)
 
+
+/**
+ * @swagger
+ *  /admin/category/all:
+ *      get:
+ *          summary: get all categories
+ *          tags: [admin-category]
+ *          description: get all categories
+ *          responses:
+ *              200:
+ *                 description: Success
+ *              400:
+ *                 description: Bad Request
+ *              401:
+ *                 description: UnAuthorization
+ *              404:
+ *                 description: Not Found
+ */
+
+router.get("/all" , CategoryController.getAllCategories)
 
 
 
