@@ -27,6 +27,15 @@ class CategoryController extends Controller {
   }
   async deleteCategory(req, res, next) {
     try {
+      const categoryId = req.params.id;
+      const deletedCategory = await CategoryModel.findByIdAndDelete(categoryId);
+      if (!deletedCategory)
+        throw { status: 404, message: "category not found" };
+
+      res.status(200).json({
+        message: "category deleted",
+        deletedCategory,
+      });
     } catch (err) {
       next(err);
     }
@@ -39,18 +48,27 @@ class CategoryController extends Controller {
   }
   async getAllCategories(req, res, next) {
     try {
-      const allCategories = await CategoryModel.aggregate([{
-        $lookup : {
-          from : "categories",
-          localField : "_id",
-          foreignField : "parent",
-          as : "children"
-        }
-      }])
+      const allCategories = await CategoryModel.aggregate([
+        {
+          $lookup: {
+            from: "categories",
+            localField: "_id",
+            foreignField: "parent",
+            as: "children",
+          },
+        },
+        {
+          $project: {
+            __v: 0,
+            "children.__v": 0,
+            "children.parent": 0,
+          },
+        },
+      ]);
       res.status(200).json({
         allCategories,
-        messsage : "all categories"
-      })
+        messsage: "all categories",
+      });
     } catch (err) {
       next(err);
     }
@@ -79,8 +97,8 @@ class CategoryController extends Controller {
       if (!parent) throw { status: 404, message: "parent not found" };
       const children = await CategoryModel.find({ parent: parentId });
       res.status(200).json({
-        data : children,
-        message : "all children"
+        data: children,
+        message: "all children",
       });
     } catch (err) {
       next(err);

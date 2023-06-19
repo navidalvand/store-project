@@ -64,7 +64,7 @@ router.get("/all-parents", CategoryController.getAllParents)
 
 /**
  * @swagger
- *  /admin/category/children/{parentId}:
+ *  /admin/category/get-children/{parentId}:
  *      get:
  *          summary: get all children categories by parent id
  *          tags: [admin-category]
@@ -85,7 +85,7 @@ router.get("/all-parents", CategoryController.getAllParents)
  *                 description: Not Found
  */
 
-router.get("/children/:parentId" , CategoryController.getAllChildrenByParent)
+router.get("/get-children/:parentId" , CategoryController.getAllChildrenByParent)
 
 
 /**
@@ -108,6 +108,32 @@ router.get("/children/:parentId" , CategoryController.getAllChildrenByParent)
 
 router.get("/all" , CategoryController.getAllCategories)
 
+
+/**
+ * @swagger
+ *  /admin/category/delete/{id}:
+ *      delete:
+ *          summary: delete category by id
+ *          tags: [admin-category]
+ *          description: delete category
+ *          parameters:
+ *            - in : path
+ *              name : id
+ *              required : true
+ *              type : string
+ *          responses:
+ *              200:
+ *                 description: Success
+ *              400:
+ *                 description: Bad Request
+ *              401:
+ *                 description: UnAuthorization
+ *              404:
+ *                 description: Not Found
+ */
+
+
+router.delete("/delete/:id" , CategoryController.deleteCategory)
 
 
 module.exports = {
