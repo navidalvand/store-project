@@ -69,7 +69,7 @@ class Server {
               },
             ],
           },
-          apis: ["./src/routes/*/*.js", "./src/routes/*.js"],
+          apis: ["./src/swagger/*/*.js"],
         })
       )
     );
