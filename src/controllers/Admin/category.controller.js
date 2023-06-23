@@ -2,6 +2,7 @@ const { CategoryModel } = require("../../models/category");
 const {
   createCategorySchema,
 } = require("../../validators/admin/category.schema");
+const mongoose = require("mongoose");
 const { Controller } = require("../controller");
 
 class CategoryController extends Controller {
@@ -28,13 +29,22 @@ class CategoryController extends Controller {
   async deleteCategory(req, res, next) {
     try {
       const categoryId = req.params.id;
-      const deletedCategory = await CategoryModel.findByIdAndDelete(categoryId);
-      if (!deletedCategory)
+      const deletedCategory = await CategoryModel.deleteMany({
+        $or: [
+          {
+            _id: categoryId,
+          },
+          {
+            parent: categoryId,
+          },
+        ],
+      });
+      if (deletedCategory.deletedCount === 0)
         throw { status: 404, message: "category not found" };
 
       res.status(200).json({
         message: "category deleted",
-        deletedCategory,
+        data: deletedCategory,
       });
     } catch (err) {
       next(err);
@@ -49,6 +59,47 @@ class CategoryController extends Controller {
   async getAllCategories(req, res, next) {
     try {
       const allCategories = await CategoryModel.aggregate([
+        {
+          $graphLookup: {
+            from: "categories",
+            startWith: "$_id",
+            connectFromField: "_id",
+            connectToField: "parent",
+            maxDepth: 5,
+            depthField: "depth",
+            as: "children",
+          },
+        },
+        {
+          $project: {
+            __v: 0,
+            "children.__v": 0,
+            "children.parent": 0,
+          },
+        },
+        {
+          $match: {
+            parent: undefined,
+          },
+        },
+      ]);
+      res.status(200).json({
+        allCategories,
+        messsage: "all categories",
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+  async getCategoryById(req, res, next) {
+    try {
+      const categoryId = req.params.id;
+      const findCategory = await CategoryModel.aggregate([
+        {
+          $match: {
+            _id: mongoose.Types.ObjectId(categoryId),
+          },
+        },
         {
           $lookup: {
             from: "categories",
@@ -65,16 +116,12 @@ class CategoryController extends Controller {
           },
         },
       ]);
+      if (findCategory.length === 0)
+        throw { status: 404, message: "category not found" };
       res.status(200).json({
-        allCategories,
-        messsage: "all categories",
+        message: "the category",
+        data: findCategory,
       });
-    } catch (err) {
-      next(err);
-    }
-  }
-  async getCategoryById(req, res, next) {
-    try {
     } catch (err) {
       next(err);
     }

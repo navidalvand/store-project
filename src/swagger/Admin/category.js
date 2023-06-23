@@ -119,3 +119,26 @@
  *                 description: Not Found
  */
 
+
+/**
+ * @swagger
+ *  /admin/category/{id}:
+ *      get:
+ *          summary: get a category by id
+ *          tags: [admin-category]
+ *          description: get category
+ *          parameters:
+ *            - in : path
+ *              name : id
+ *              required : true
+ *              type : string
+ *          responses:
+ *              200:
+ *                 description: Success
+ *              400:
+ *                 description: Bad Request
+ *              401:
+ *                 description: UnAuthorization
+ *              404:
+ *                 description: Not Found
+ */
