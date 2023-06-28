@@ -58,31 +58,7 @@ class CategoryController extends Controller {
   }
   async getAllCategories(req, res, next) {
     try {
-      const allCategories = await CategoryModel.aggregate([
-        {
-          $graphLookup: {
-            from: "categories",
-            startWith: "$_id",
-            connectFromField: "_id",
-            connectToField: "parent",
-            maxDepth: 5,
-            depthField: "depth",
-            as: "children",
-          },
-        },
-        {
-          $project: {
-            __v: 0,
-            "children.__v": 0,
-            "children.parent": 0,
-          },
-        },
-        {
-          $match: {
-            parent: undefined,
-          },
-        },
-      ]);
+      const allCategories = await CategoryModel.find({parent : undefined})
       res.status(200).json({
         allCategories,
         messsage: "all categories",
@@ -93,35 +69,7 @@ class CategoryController extends Controller {
   }
   async getCategoryById(req, res, next) {
     try {
-      const categoryId = req.params.id;
-      const findCategory = await CategoryModel.aggregate([
-        {
-          $match: {
-            _id: mongoose.Types.ObjectId(categoryId),
-          },
-        },
-        {
-          $lookup: {
-            from: "categories",
-            localField: "_id",
-            foreignField: "parent",
-            as: "children",
-          },
-        },
-        {
-          $project: {
-            __v: 0,
-            "children.__v": 0,
-            "children.parent": 0,
-          },
-        },
-      ]);
-      if (findCategory.length === 0)
-        throw { status: 404, message: "category not found" };
-      res.status(200).json({
-        message: "the category",
-        data: findCategory,
-      });
+
     } catch (err) {
       next(err);
     }
