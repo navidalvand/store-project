@@ -80,6 +80,13 @@ class CategoryController extends Controller {
   }
   async getCategoryById(req, res, next) {
     try {
+      const { id } = req.params;
+      const category = await CategoryModel.findById(id);
+      if (!category) throw { status: 404, messsage: "category not found" };
+      res.status(200).json({
+        message: "the category",
+        data: category,
+      });
     } catch (err) {
       next(err);
     }
