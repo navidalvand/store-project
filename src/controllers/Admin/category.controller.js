@@ -93,7 +93,7 @@ class CategoryController extends Controller {
   }
   async getAllParents(req, res, next) {
     try {
-      const parentCategories = await CategoryModel.find({ parent: null });
+      const parentCategories = await CategoryModel.find({ parent: undefined });
       res.status(200).json({
         data: parentCategories,
         message: "all parent categories",
