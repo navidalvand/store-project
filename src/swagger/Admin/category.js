@@ -1,11 +1,9 @@
-
 /**
  * @swagger
  *  tags :
  *      name : admin-category
  *      description : category management in panel admin
  */
-
 
 /**
  * @swagger
@@ -35,7 +33,6 @@
  *              500:
  *                 description: Internal Server Error
  */
-
 
 /**
  * @swagger
@@ -119,6 +116,32 @@
  *                 description: Not Found
  */
 
+/**
+ * @swagger
+ *  /admin/category/update/{id}:
+ *      patch:
+ *          summary: update a category by id
+ *          tags: [admin-category]
+ *          description: update category
+ *          parameters:
+ *            - in : path
+ *              name : id
+ *              required : true
+ *              type : string
+ *            - in : formData
+ *              name : title
+ *              required : true
+ *              type : string
+ *          responses:
+ *              200:
+ *                 description: Success
+ *              400:
+ *                 description: Bad Request
+ *              401:
+ *                 description: UnAuthorization
+ *              404:
+ *                 description: Not Found
+ */
 
 /**
  * @swagger

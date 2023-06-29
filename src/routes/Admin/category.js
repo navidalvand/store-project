@@ -12,6 +12,7 @@ router.get(
 );
 router.get("/all", CategoryController.getAllCategories);
 router.delete("/delete/:id", CategoryController.deleteCategory);
+router.patch("/update/:id" , CategoryController.updateCategory)
 router.get("/:id", CategoryController.getCategoryById)
 
 

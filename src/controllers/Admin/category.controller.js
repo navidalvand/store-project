@@ -52,13 +52,24 @@ class CategoryController extends Controller {
   }
   async updateCategory(req, res, next) {
     try {
+      const { id } = req.params;
+      const { title } = req.body;
+      const updatedCategory = await CategoryModel.updateOne(
+        { _id: id },
+        { $set: { title } }
+      );
+      if (updatedCategory.matchedCount === 0)
+        throw { status: 404, message: "category not found" };
+      res.status(200).json({
+        message: "category updated",
+      });
     } catch (err) {
       next(err);
     }
   }
   async getAllCategories(req, res, next) {
     try {
-      const allCategories = await CategoryModel.find({parent : undefined})
+      const allCategories = await CategoryModel.find({ parent: undefined });
       res.status(200).json({
         allCategories,
         messsage: "all categories",
@@ -69,7 +80,6 @@ class CategoryController extends Controller {
   }
   async getCategoryById(req, res, next) {
     try {
-
     } catch (err) {
       next(err);
     }
